@@ -1,0 +1,340 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+AS5545 Spacecraft dynamics and control
+\end_layout
+
+\begin_layout Author
+R Sandeepkumar AE17S017
+\end_layout
+
+\begin_layout Date
+24-11-18
+\end_layout
+
+\begin_layout Section
+Problem statement
+\end_layout
+
+\begin_layout Standard
+Based on mission requirements attitude of spacraft needs to be stabilized
+ either inertially pointing or earth pointing.With passive stabilisation
+ techniques results in poor set point tracking and can affect the quality
+ of data collected in space.
+ Hence active controls are neccessary and we introduce PD control algorithm
+ to cater the means to stabilze a unstable Astrosat satellite.
+ Classical controller developed is based on linearized model and tested
+ on a nonlinear model for validation and performance issues.
+\end_layout
+
+\begin_layout Section
+Equations of motion
+\end_layout
+
+\begin_layout Standard
+In our fourmulation the translational dynamics are not taken into consideration.
+ The attitude of the spacecraft is formulated using Euler angles and correspondi
+ng rotational dynamics equations are derived.
+ 
+\end_layout
+
+\begin_layout Standard
+Kinematic equation can be derived using roational matrices.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\frac{d}{dt}\begin{bmatrix}\phi\\
+\theta\\
+\psi
+\end{bmatrix}=\begin{bmatrix}1 & \tan(\theta)\sin(\phi) & \tan(\theta)\cos(\phi)\\
+0 & \cos(\phi) & -\sin(\phi)\\
+0 & \sec(\theta)\sin(\phi) & \sec(\theta)\cos(\phi)
+\end{bmatrix}\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The dynamics are defined by the folowing equations.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\frac{d}{dt}\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}=-I^{-1}\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}\times I\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}+I^{-1}\left(\overrightarrow{T_{g}}+\overrightarrow{T_{d}}+\overrightarrow{T_{c}}\right)$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+where 
+\begin_inset Formula $I=\begin{bmatrix}I_{xx} & -I_{xy} & -I_{xz}\\
+-I_{xy} & I_{yy} & -I_{yz}\\
+-I_{xz} & -I_{yz} & I_{zz}
+\end{bmatrix}$
+\end_inset
+
+ is the moment of inertia matrix
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\phi,\theta,\psi$
+\end_inset
+
+ are the roll, pitch and yaw anlges of the satellite and 
+\begin_inset Formula $p,q,r$
+\end_inset
+
+ are the body angular rates.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\overrightarrow{T_{g}}$
+\end_inset
+
+ gravity gradient torque
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\overrightarrow{T_{d}}$
+\end_inset
+
+ disturbance torque
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\overrightarrow{T_{c}}$
+\end_inset
+
+ control torque
+\end_layout
+
+\begin_layout Section
+Linearized equation of motion
+\end_layout
+
+\begin_layout Standard
+Classical control techinque design apply only to class systems called linear
+ systems and it is in our best interest to linearize the system and design
+ one possible controller for the same about the given equilibrium point.
+ An equilibrium point is defined as follows.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\frac{d}{dt}\overrightarrow{X}=\overrightarrow{f}(\overrightarrow{X},\overrightarrow{U})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\overrightarrow{f}(\overrightarrow{X}^{*},\overrightarrow{U}^{*})=\overrightarrow{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where, 
+\begin_inset Formula $\overrightarrow{X}^{*},\overrightarrow{U}^{*}$
+\end_inset
+
+ is the required equilibrium point.
+\end_layout
+
+\begin_layout Standard
+Ideally a non-linear equation in has to be solved for obtaining the equilibrium
+ point.
+ For our choice of application we define 
+\begin_inset Formula $X^{*}$
+\end_inset
+
+as 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $X^{*}=\begin{bmatrix}0\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The corresponding trim condition is obtained by solving the non-linear equations.
+ The equations of motions will be linearised about the equilibrium point
+ obtained.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\delta\dot{\overrightarrow{X}}=A\delta\overrightarrow{X}+B\delta\overrightarrow{U}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $A,B$
+\end_inset
+
+ are jacobian of 
+\begin_inset Formula $\overrightarrow{f}$
+\end_inset
+
+w.r.t to 
+\begin_inset Formula $\overrightarrow{X}$
+\end_inset
+
+ and 
+\begin_inset Formula $\overrightarrow{U}$
+\end_inset
+
+ respectively.
+\end_layout
+
+\begin_layout Standard
+For the following setting chosen the 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ matrices were as follows
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $A=\begin{bmatrix}0 & 0 & 0 & 1 & 0 & 0\\
+0 & 0 & 0 & 0 & 1 & 0\\
+0 & 0 & 0 & 0 & 0 & 1\\
+0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}$
+\end_inset
+
+ and 
+\begin_inset Formula $B\begin{bmatrix}0 & 0 & 0\\
+0 & 0 & 0\\
+0 & 0 & 0\\
+ & 0 & 0\\
+0 &  & 0\\
+0 & 0
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We assume off-diagonal terms from the inertia matrix are zero during control
+ design process.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_body
+\end_document

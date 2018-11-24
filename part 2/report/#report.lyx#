@@ -1,0 +1,3072 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass spie
+\use_default_options true
+\begin_modules
+multicol
+sectionbox
+theorems-ams
+eqs-within-sections
+figs-within-sections
+\end_modules
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine natbib
+\cite_engine_type authoryear
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+AS5545 Spacecraft dynamics and control-Mini Project
+\end_layout
+
+\begin_layout Author
+R Sandeepkumar AE17S017
+\end_layout
+
+\begin_layout Section
+Problem statement
+\end_layout
+
+\begin_layout Standard
+Based on mission requirements attitude of spaceraft needs to be stabilized
+ either in a inertially pointing or earth pointing sense.
+ This is practically impossible with passive stabilisation techniques and
+ it results in poor set point tracking which in turn can affect the quality
+ of data collected in space for research purposes.
+ Hence active controls are neccessary and we introduce PD control algorithm
+ to stabilze an unstable Astrosat satellite.Astrosat is a zero momentum biased
+ spaceraft.
+ A classical controller developed is based on linearised model of the plant
+ about an equlibrium condition and is tested on a nonlinear model for validation
+ and performance evaluation.
+\end_layout
+
+\begin_layout Section
+Equations of motion
+\end_layout
+
+\begin_layout Standard
+In our fourmulation the translational dynamics are not taken into consideration.
+ The attitude of the spacecraft is formulated using Euler angles and correspondi
+ng rotational dynamics equations are derived.
+ 
+\end_layout
+
+\begin_layout Standard
+Kinematic equation can be derived using roational matrices.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\frac{d}{dt}\begin{bmatrix}\phi\\
+\theta\\
+\psi
+\end{bmatrix}=\begin{bmatrix}1 & \tan(\theta)\sin(\phi) & \tan(\theta)\cos(\phi)\\
+0 & \cos(\phi) & -\sin(\phi)\\
+0 & \sec(\theta)\sin(\phi) & \sec(\theta)\cos(\phi)
+\end{bmatrix}\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The dynamics are defined by the folowing equations.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\frac{d}{dt}\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}=-I^{-1}\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}\times I\begin{bmatrix}p\\
+q\\
+r
+\end{bmatrix}+I^{-1}\left(\overrightarrow{T_{g}}+\overrightarrow{T_{d}}+\overrightarrow{T_{c}}\right)$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+where 
+\begin_inset Formula $I=\begin{bmatrix}I_{xx} & -I_{xy} & -I_{xz}\\
+-I_{xy} & I_{yy} & -I_{yz}\\
+-I_{xz} & -I_{yz} & I_{zz}
+\end{bmatrix}$
+\end_inset
+
+ is the moment of inertia matrix
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\phi,\theta,\psi$
+\end_inset
+
+ are the roll, pitch and yaw anlges of the satellite and 
+\begin_inset Formula $p,q,r$
+\end_inset
+
+ are the body angular rates.
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\overrightarrow{T_{g}}$
+\end_inset
+
+ gravity gradient torque
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\overrightarrow{T_{d}}$
+\end_inset
+
+ disturbance torque
+\end_layout
+
+\begin_layout Itemize
+\begin_inset Formula $\overrightarrow{T_{c}}$
+\end_inset
+
+ control torque
+\end_layout
+
+\begin_layout Subsection
+Limitation
+\end_layout
+
+\begin_layout Itemize
+Singularities
+\end_layout
+
+\begin_layout Itemize
+Computationally expensive compared to other representation
+\end_layout
+
+\begin_layout Section
+Linearized equation of motion
+\end_layout
+
+\begin_layout Standard
+Classical control techinque design apply only to class systems called linear
+ systems and it is in our best interest to linearize the system and design
+ one possible controller for the same about the given equilibrium point.
+ An equilibrium point is defined as follows.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\frac{d}{dt}\overrightarrow{X}=\overrightarrow{f}(\overrightarrow{X},\overrightarrow{U})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\overrightarrow{f}(\overrightarrow{X}^{*},\overrightarrow{U}^{*})=\overrightarrow{0}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where, 
+\begin_inset Formula $\overrightarrow{X}^{*},\overrightarrow{U}^{*}$
+\end_inset
+
+ is the required equilibrium point.
+\end_layout
+
+\begin_layout Standard
+Ideally a non-linear equation in has to be solved for obtaining the equilibrium
+ point.
+ For our choice of application we define 
+\begin_inset Formula $X^{*}$
+\end_inset
+
+as 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $X^{*}=\begin{bmatrix}0\\
+0\\
+0\\
+0\\
+0\\
+0
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The corresponding trim condition is obtained by solving the non-linear equations.
+ The equations of motions will be linearised about the equilibrium point
+ obtained.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\delta\dot{\overrightarrow{X}}=A\delta\overrightarrow{X}+B\delta\overrightarrow{U}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where 
+\begin_inset Formula $A,B$
+\end_inset
+
+ are jacobian of 
+\begin_inset Formula $\overrightarrow{f}$
+\end_inset
+
+w.r.t to 
+\begin_inset Formula $\overrightarrow{X}$
+\end_inset
+
+ and 
+\begin_inset Formula $\overrightarrow{U}$
+\end_inset
+
+ respectively.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\overrightarrow{T_{g}}$
+\end_inset
+
+ depends on the inertial positon of the spacecraft.
+ Since we have a inertial pointing spacecraft the components will be osscilating
+ in nature across the orbital period.
+ For design purpose a position in the orbit was chosen.
+ The gravity gradient torque is periodic in nature for inertial pointing
+ satellites.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/gravity/gravity.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Gravity gradient torque over one period
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By fixing states and a postion in the orbit the control torque required
+ was found for the equilibrium and joacbians were evaluated at this point.
+ The corresponding A and B matrices are given as follows.
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $A=\begin{bmatrix}0 & 0 & 0 & 1 & 0 & 0\\
+0 & 0 & 0 & 0 & 1 & 0\\
+0 & 0 & 0 & 0 & 0 & 1\\
+0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0 & 0 & 0
+\end{bmatrix}$
+\end_inset
+
+ and 
+\begin_inset Formula $B\begin{bmatrix}0 & 0 & 0\\
+0 & 0 & 0\\
+0 & 0 & 0\\
+5.67\times10^{-4} & 0 & 0\\
+0 & 6.29\times10^{-4} & 0\\
+0 & 0 & 8.44\times10^{-4}
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We assume off-diagonal terms from the inertia matrix are zero during control
+ design process.
+\end_layout
+
+\begin_layout Standard
+The 6 equation of motion can be reduced to 3 second order differential equation
+ to get the following equation.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\begin{bmatrix}\delta\ddot{\phi}\\
+\delta\ddot{\theta}\\
+\delta\ddot{\psi}
+\end{bmatrix}=\begin{bmatrix}5.67\times10^{-4}\delta T_{cx}\\
+6.29\times10^{-4}\delta T_{cy}\\
+8.44\times10^{-4}\delta T_{cz}
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Limitations
+\end_layout
+
+\begin_layout Itemize
+Few coupled terms were neglected
+\end_layout
+
+\begin_layout Itemize
+Off diagonal term in inertia matrix were set to zero for design purpose
+\end_layout
+
+\begin_layout Itemize
+For large perturbations this will significantly vary from non-linear model
+\end_layout
+
+\begin_layout Itemize
+Ideally for every position in orbit trim has to be calculated but we work
+ with a fixed a position.
+\end_layout
+
+\begin_layout Subsection
+Need for linearisation
+\end_layout
+
+\begin_layout Standard
+Classical control techniques used so far in the course were meant to be
+ dealt for SISO systems.
+ For our dynamical model we have 6 states and 3 controls and hence its a
+ MIMO system.
+ For earth pointing satellites small angle approximation is used and perturbed
+ motion is analysed.
+ This is equivalent to linearising the the system about state equal to zero.
+ Using this a motivation, the equation motion required for control system
+ design are developed by linearisation of the dynamics.
+\end_layout
+
+\begin_layout Section
+Transfer function
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\begin{bmatrix}\phi\left(s\right)=\frac{5.67\times10^{-4}\delta T_{cx}}{s^{2}}\\
+\theta\left(s\right)=\frac{6.29\times10^{-4}\delta T_{cy}}{s^{2}}\\
+\psi\left(s\right)=\frac{8.44\times10^{-4}\delta T_{cz}}{s^{2}}
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+From the linear model developed, Laplace transform is applied and transfer
+ funtion for the dynamics is found out.
+ All the transfer functions correspond to type 2 systems and they are unstable
+ in nature.
+ A PD control algorithm is proposed for the role of a compensator instead
+ of PID control.
+ This is backed by the fact that addition of integral term will lead to
+ increase in type of the system and complexity.
+\end_layout
+
+\begin_layout Standard
+In order to get initial estimates for the gains, Routh criteria and performance
+ requirements are used.
+ The approximate gains obtained are fine tuned by using root locus method.
+ This is implemented in matlab via the sisotool toolbox.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/free response/open1.eps
+	scale 60
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\phi$
+\end_inset
+
+-step response
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/free response/open2.eps
+	scale 60
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\theta$
+\end_inset
+
+-step response
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/free response/open3.eps
+	scale 60
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\psi$
+\end_inset
+
+-step response
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Two poles at origin males the system unstable and this also seen from the
+ step response plots.
+ Hence we need a compensator to stabilize the system and achieve desired
+ performance for the criterias specified.
+\end_layout
+
+\begin_layout Section
+Free response
+\end_layout
+
+\begin_layout Standard
+System simulated by starting from an initial condition in the absence any
+ control.
+\end_layout
+
+\begin_layout Subsection
+Non linear system
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/free response/nonfree.eps
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Free reponse of non-linear system from a point near equillibrium point in
+ the absence of actuators
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The differential equation is integrated by chosing a point near 
+\begin_inset Formula $X^{*}$
+\end_inset
+
+with zero actuator control to see response of the system.This results in
+ unstable motion with exponential divergence in 
+\begin_inset Formula $\psi$
+\end_inset
+
+ .In order to quantify instablity associated we can study the linearised
+ system and use the nature of eigenvalues to conclude on the stabilty associated
+ with the operating point.
+ 
+\end_layout
+
+\begin_layout Subsection
+Linearized system
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/free response/linearized.eps
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Linearized system (Note- Angles and rates are corresponding to the perturbed
+ motion)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Eigenvalue plot for the linearized system has been plotted below.
+ As seen from plot, an eigenvalue lies on the right half plane and this
+ accounts for the equilibrium point being unstable and resulting unstable
+ motion.
+\end_layout
+
+\begin_layout Standard
+For the equilibrium point to be stable, 
+\series bold
+all the eigenvalues
+\series default
+ associated with the jacobian matrix 
+\begin_inset Formula $A$
+\end_inset
+
+ must lie on the 
+\series bold
+left half plane
+\series default
+.
+ This is same as the poles criteria for the transfer function to be stable.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/free response/eig.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Eigenvalues of the jacobian matrix A
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There a need for a control system to actively stabilze the system and the
+ work done in realising one such possible control algorthm is presented
+ in the following sections.
+\end_layout
+
+\begin_layout Section
+Control system design
+\end_layout
+
+\begin_layout Standard
+The design of the controller is implemented in the Laplace domain with well
+ known classical techniques.
+\end_layout
+
+\begin_layout Itemize
+Controller transfer function
+\end_layout
+
+\begin_layout Itemize
+Routh criteria
+\end_layout
+
+\begin_layout Itemize
+Performance requirements
+\end_layout
+
+\begin_layout Itemize
+Preliminary gain selection
+\end_layout
+
+\begin_layout Itemize
+Root locus
+\end_layout
+
+\begin_layout Subsection
+Controller transfer function
+\end_layout
+
+\begin_layout Standard
+A PD controller is proposed for the controller implementation.
+ We have a type 2 system and these are unstable as shown from analysis done
+ in previous sections.
+ Integral term inceases the type of system wheras PD will add zero to the
+ system.
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $U_{c}=K_{p}(r(t)-y(t))+K_{d}(\dot{r(t)}-\dot{y(t)})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Modified PD control is used here.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $U_{c}=K_{p}(r(t)-y(t))+K_{d}(-\dot{y(t)})$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is done because step changes in reference will lead to large error
+ in the slopes and performance will be affected.
+ The 
+\series bold
+derivative
+\series default
+ of the mesurements can be obtained from 
+\series bold
+dynamics equation
+\series default
+.
+\end_layout
+
+\begin_layout Standard
+The transfer function associated with the controller is given below.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $G_{c}(s)=K_{p}+K_{d}s$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let us define the general plant transfer funciton as follows.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $G_{p}(s)=\frac{a}{s^{2}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+where a is constant associated with each axis of the spacecraft.
+\end_layout
+
+\begin_layout Standard
+The closed loop transfer function for unity feedback is as follows.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $G_{cl}(s)=\frac{G_{p}G_{C}}{1+G_{p}G_{C}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $G_{cl}(s)=\frac{aK_{p}+aK_{d}s}{s^{2}+aK_{p}+aK_{d}s}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By appropriately tuning the gains 
+\begin_inset Formula $K_{d}$
+\end_inset
+
+ and 
+\begin_inset Formula $K_{p}$
+\end_inset
+
+, the system can be made stable and required performance criteria can be
+ met.
+ The natural frequency and damping can be appropriately chosen by varying
+ the gains of the system.
+\end_layout
+
+\begin_layout Subsection
+Routh Criteria
+\end_layout
+
+\begin_layout Standard
+Routh table is constructed as follows.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\begin{bmatrix}s^{2} & 1 & aK_{d}\\
+s^{1} & aK_{p} & 0\\
+s^{0} & aK_{d} & 0
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The basic criteria for gains to lie on the left half plane is that both
+ K_p and K_d must be positive.
+ Any positive gain will work but we need to meet performance requirements.
+ Hence we constraint the LHP and get better gains.
+\end_layout
+
+\begin_layout Subsection
+Performance requirements
+\end_layout
+
+\begin_layout Standard
+From the step response of 
+\begin_inset Formula $2^{nd}$
+\end_inset
+
+ order system, rise time, peak time ,
+\begin_inset Formula $M_{p}$
+\end_inset
+
+, settling time and steady state errors can be used as performance measured
+ to get design gains at preliminary stages.Inertial pointing satellites are
+ used for observatory purposes and hence 
+\series bold
+stabilisation
+\series default
+ needs to be 
+\series bold
+fast
+\series default
+ .
+ For this we use 
+\begin_inset Formula $M_{p}$
+\end_inset
+
+and 
+\series bold
+settling time
+\series default
+ to tune our gains.
+\end_layout
+
+\begin_layout Subsubsection
+Maxmimum overshoot percentage
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $M_{p}=e^{\frac{\pi\zeta}{\sqrt{1-\zeta^{2}}}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This depends only on the damping ratio of the system.
+ For our requirement we set 
+\begin_inset Formula $M_{p}=10\%$
+\end_inset
+
+ and obtain 
+\begin_inset Formula $\zeta$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Settling time
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $t_{s}=\frac{4.4}{\zeta\omega_{n}}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A settling time of 20 s is chosen and 
+\begin_inset Formula $\omega_{n}$
+\end_inset
+
+ is obtained.
+\end_layout
+
+\begin_layout Subsubsection
+Preliminary Gains
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $K_{p}=\frac{\omega_{n}^{2}}{a}$
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $K_{d}=\frac{2\zeta\omega_{n}}{a}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Axis
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $K_{p}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $K_{d}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\phi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+244
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+776
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+220
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+700
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\psi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+164
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+521
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Preliminary gains
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the gains obtained ,step input response is plotted and studied.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/design/1.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\phi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/design/2.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/design/3.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\psi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As seen from the plots, 
+\begin_inset Formula $t_{s}$
+\end_inset
+
+and 
+\begin_inset Formula $M_{p}$
+\end_inset
+
+are different from the gains tuned using performance requirements.
+ This is due to the 
+\series bold
+transient effect of the pole
+\series default
+ in the numerator of the transfer function.
+ We are barely meeting the performance requirements.
+ In order to move forward we will study the root locus of the system and
+ decide the gains from it.
+\end_layout
+
+\begin_layout Subsubsection
+Root locus
+\end_layout
+
+\begin_layout Standard
+By adding a compensator to a type 2 system we added a real zero in the LHP.
+ One of the asymptote is the negative real axis.
+ one of the poles will move towards the zeros and the other will go to 
+\begin_inset Formula $-\infty$
+\end_inset
+
+.
+ Using sisotool, poles are moved approriately to meet performance requirements.
+\end_layout
+
+\begin_layout Standard
+Since a single gain is to be varied while using root locus we should fix
+ one of the gains and vary the other.
+ A alternative is proposed and used for our analysis.
+\end_layout
+
+\begin_layout Standard
+Assume that 
+\begin_inset Formula $K_{p,}K_{d}$
+\end_inset
+
+ satisfy a linear relationship.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $K_{d}=\alpha K_{P}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+By doing this there is more flexibity while designing the gains for the
+ systems.
+\end_layout
+
+\begin_layout Standard
+Effectively the controller for root locus is as follows.
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $G_{p}=K(s+\alpha)$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\alpha$
+\end_inset
+
+ can be found from the preliminary gain obtained.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename fi.png
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\phi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename theta.png
+	scale 20
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename si.png
+	scale 20
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\psi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The V shaped region and half plane region correspond to limits on 
+\begin_inset Formula $t_{s}$
+\end_inset
+
+and
+\begin_inset Formula $M_{p}$
+\end_inset
+
+.By only working in the white region gains are tuned and used.
+ Following were the results of the tuning done and have been summarised
+ in the form a table.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="6">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Performance 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\text{\ensuremath{\phi}}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\psi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $K_{p}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $K_{d}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $t_{s}$
+\end_inset
+
+
+\begin_inset Formula $(s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.22
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.25
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+9.29
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+591
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1812
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $t_{r}$
+\end_inset
+
+
+\begin_inset Formula $(s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.35
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.36
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1.37
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+507.7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1614
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $t_{p}$
+\end_inset
+
+
+\begin_inset Formula $(s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.68
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.63
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3.67
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+374
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1188
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $M_{p}$
+\end_inset
+
+
+\begin_inset Formula $(%\%)
+$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15.4
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15.6
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+15.7
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+-
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Final performance requirements and gains
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The response of the system is also plotted for a step input.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/design/rloc1.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\family roman
+\series medium
+\shape up
+\size normal
+\emph off
+\bar no
+\strikeout off
+\xout off
+\uuline off
+\uwave off
+\noun off
+\color none
+\begin_inset Formula $\ensuremath{\phi}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/design/rloc2.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/design/rloc3.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset Formula $\psi$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Non-linear simulation
+\end_layout
+
+\begin_layout Standard
+We designed control laws by lineazrising the system dynamics about trim
+ condtion and have met the required performance criterias.
+ But in reality these will be deployed on actual systems whose dynamics
+ can be highly non linear.
+ In order to make simulations more relalistic controller is tested with
+ a non-linear dynamical model and its effects on performance are studied.
+\end_layout
+
+\begin_layout Subsection
+Setting up the simulation blocks
+\end_layout
+
+\begin_layout Standard
+The simulator mainly consists of a controller block and a non-linear plant
+ blocks written as MATLAB functions.
+ Controller block calculates the controls to be given based on the gains
+ and error.
+ This is given to the plant and time evolved to get the next states at next
+ instant.
+ This will be fed back to the controller and process continues.
+ This completes the feedback simulation of the system.
+ Also at every instant knowledge about the position is also fed to the plant
+ to keep simulations realistic.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename block.eps
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Block diagram
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Attitude stabilization
+\end_layout
+
+\begin_layout Standard
+The satellite is to be stabilized about zero degrees in all the axis .
+ To start with we say that the system is kept at some initial configuration
+ and see if controller is able to stablize it.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+State variable
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Initial 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Set point
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathring{\phi}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathring{\theta}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathring{\psi}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $p(rad/s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $q(rad/s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $r(rad/s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Simulation parameters
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/st.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+States
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/con.eps
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Controls
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Looking at control response characteristics, we see that a negative moment
+ is applied to the system to reduce the roll error.
+ In doing so, all the coupled states are engaged and corrections for pitch
+ and yaw is also given by the controller.
+ The control moment along roll goes to a large negative value and then begins
+ to decrease.
+ If more moment was added, it would miss the set point.The reduction in moment
+ slows down the satellite and it finally gets stabilized.
+ Key point is that moments to be given were intuitive and similar behaviour
+ is seen in the simulation.
+ The control torques had to be engaged for other axes because of the non-linear
+ coupling in the states.
+ 
+\series bold
+This however will not be the case with the linearised system all coupling
+ terms won't be there and control torques won't be required.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/stl.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+States (Linearised system)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/conl.eps
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Controls (Linearised system)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here we see that controls generated from pitch and yaw are very small and
+ this is accounted due to decoupled dynamics.
+ On first sight it might seem linearised and non-linearised respond in the
+ same way but it is not.
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+settling time has changed
+\series default
+ for the non-linear simulation.
+ Our design requirement was roughly 9 seconds.
+ This behaviour is seen in the linearized system whereas in comparison to
+ non-linear system the settling time got increased to 16 seconds approximately
+ (
+\begin_inset Formula $77\%$
+\end_inset
+
+ rise) .
+ Hence control system gains need to designed very carefully for deployment.
+ 
+\end_layout
+
+\begin_layout Subsection
+Set point tracking
+\end_layout
+
+\begin_layout Standard
+For every 100 seconds we want 2 attitude set point to be tracked alternatively.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="7" columns="3">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="center" valignment="top">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+State variable
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Set point 1 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Set point 2
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathring{\phi}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathring{\theta}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $\mathring{\psi}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $p(rad/s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $q(rad/s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $r(rad/s)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+0
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Simulation parameters
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/setst.eps
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+States (Change of set points every 100 seconds)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/setcon.eps
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Controls (Change of set points every 100 seconds)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For the above case set points were changed over a time interval of 100 seconds.
+ Lets say we change the set points faster at say every 5 seconds.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/fastst.eps
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+States (Change of set points every 5 seconds)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/sandeepkumar/Downloads/spaceraft dynamics and control/part 2/sim/fastcon.eps
+	scale 80
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Controls (Change of set points every 5 seconds)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Clearly we don't see the required performance as seen from previous case
+ where 100 secs were was used to switch between set points.
+ Before the system can actually go to the set point fixed ,newer set point
+ is given and leads to poor tracking.
+ This exercise is to show that while giving time varying set points to the
+ system its critical to look at the 
+\begin_inset Formula $t_{s}$
+\end_inset
+
+ of the system.
+ Note that control histories are same for both the cases.
+ This is evident because controller does not rely on the model unlike model
+ based controller like MPC.
+ The dynamics were slow to respond to the fast changes in the set point.
+\end_layout
+
+\begin_layout Section
+Limitations
+\end_layout
+
+\begin_layout Itemize
+Actuator dynamics not taken into consideration
+\end_layout
+
+\begin_layout Itemize
+Control torque constraints required for meaning full simulation
+\end_layout
+
+\begin_layout Itemize
+Gain are designed for a fixed equilibrium condition.
+ Gain scheduling will be the next step to be tried out.
+\end_layout
+
+\begin_layout Itemize
+Sensor noise not included
+\end_layout
+
+\begin_layout Itemize
+Position dynamics assumed to be decoupled
+\end_layout
+
+\begin_layout Section
+Conclusion
+\end_layout
+
+\begin_layout Standard
+A PD control system for a satellite is developed from classical control
+ techniques using standard methods.
+ To start with preliminary gains are decide based on Routh criteria and
+ performance metrics like 
+\begin_inset Formula $t_{s}$
+\end_inset
+
+.
+ This is further improved upon by using root locus and gains are computed.
+ Computed gains are put to test on a non-linear system and performance is
+ compared.
+ 2 cases for simulation study was used and its outcomes were studied and
+ reasoned.
+\end_layout
+
+\begin_layout Section
+Appendix
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Formula $\begin{bmatrix}s^{3} & T & aK_{d}\\
+s^{2} & 1 & aK_{p}\\
+s^{1} & a(K_{d}-K_{p}) & 0\\
+s^{0} & a(Kp) & 0
+\end{bmatrix}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula $\frac{K_{d}}{K_{p}}>T$
+\end_inset
+
+ for stabilty.
+ Min value for 
+\begin_inset Formula $\frac{K_{d}}{K_{p}}$
+\end_inset
+
+from our design was 3.
+ So 
+\begin_inset Formula $T<3$
+\end_inset
+
+ for actuator model chosen if added to the system in future.
+\end_layout
+
+\begin_layout Standard
+
+\end_layout
+
+\end_body
+\end_document
