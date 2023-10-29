@@ -1,2 +1,2 @@
-# Spacecraft-control-PD
-PD control simulation of a spacecraft
+# Astrosat PD control
+PD control simulation of Astrosat satellite
